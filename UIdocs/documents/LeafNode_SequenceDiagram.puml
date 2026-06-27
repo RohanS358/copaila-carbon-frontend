@@ -1,0 +1,129 @@
+@startuml LeafNode_SequenceDiagram
+title CoPaila - Carbon Audit Submission Sequence Diagram
+
+participant "School Admin\n(UI)" as admin
+participant "Frontend\nReact App" as frontend
+participant "Auth Guard\n(Middleware)" as auth
+participant "Schools\nController" as schools_ctrl
+participant "Carbon Calculator\nService" as calc_service
+participant "Prisma\nORM" as prisma
+participant "Database\nPostgreSQL" as db
+participant "OMRChecker\nService" as omr_service
+
+autonumber
+
+' Scenario: School Admin submits carbon audit
+
+admin -> frontend: Click "Submit Audit"
+activate frontend
+
+frontend -> frontend: Validate Form\n(All 9 categories)
+note right of frontend: Validation:\n- Non-negative values\n- Correct units\n- Data tier selected
+
+frontend -> frontend: Build SubmitAuditDto\n(includes school ID, data)
+
+admin -> frontend: Click "Submit"
+frontend -> schools_ctrl: POST /api/v1/schools/{id}/audit\n+ Bearer token + SubmitAuditDto
+deactivate frontend
+
+activate schools_ctrl
+schools_ctrl -> auth: Verify JWT token
+activate auth
+auth -> auth: Check token expiry\nCheck role (SCHOOL_ADMIN)
+auth --> schools_ctrl: ✓ Authenticated & Authorized
+deactivate auth
+
+schools_ctrl -> calc_service: submitAudit(schoolId, userId, dto)
+activate calc_service
+
+calc_service -> prisma: findUnique(school)\nwhere schoolId
+activate prisma
+prisma -> db: SELECT * FROM School WHERE id = ?
+db --> prisma: School record
+prisma --> calc_service: School object
+deactivate prisma
+
+calc_service -> calc_service: Validate school status\nENROLLMENT_MIDPOINT lookup
+calc_service -> calc_service: Create AuditContext:\n{ enrollment, areaType }
+
+calc_service -> calc_service: Extract 9 category inputs:\n- electricity (kWh)\n- generator (liters)\n- vehicle (liters)\n- cooking (liters)\n- refrigerant (kg)\n- commute (person-km)\n- paper (kg)\n- food (kg)\n- waste (kg)
+
+note right of calc_service: Category extraction\nfrom SubmitAuditDto\ninto CategoryInputs
+
+calc_service -> calc_service: Call runCalculation\n(inputs, auditContext)
+
+loop For each of 9 categories
+  calc_service -> calc_service: CATEGORY_PROCESSORS[category]\n.calculateEmissions(input, context)
+  
+  calc_service -> calc_service: Apply Tier 1/2/3 confidence\napply emission factor\ncalculate scope (1/2/3)
+  
+  alt Electricity (Scope 2)
+    calc_service -> calc_service: factor = getGridFactor(areaType, province)
+    calc_service -> calc_service: emissions = kWh × factor
+  else Generator/Fuel (Scope 1)
+    calc_service -> calc_service: factor = FuelCO2Factors[fuel_type]
+    calc_service -> calc_service: emissions = liters × factor
+  else Commute (Scope 3)
+    calc_service -> calc_service: factor = getCommuteFactor(areaType)
+    calc_service -> calc_service: emissions = person-km × factor
+  else Food/Waste (Scope 3)
+    calc_service -> calc_service: factor = DefaultFactors[category]
+    calc_service -> calc_service: emissions = quantity × factor
+  end
+end
+
+calc_service -> calc_service: Calculate totals:\n- scope1Total\n- scope2Total\n- scope3Total\n- totalEmissions
+
+calc_service -> prisma: $transaction(async (tx) => {...})
+activate prisma
+
+prisma -> db: UPSERT CarbonAudit\n(schoolId, academicYear, month)
+note right of prisma: Composite key ensures\none audit per school/period
+
+db --> prisma: auditId
+
+prisma -> db: DELETE ActivityData WHERE auditId\n(rebuild fresh)
+
+note right of prisma: Rebuild from scratch\nfor this submission
+
+db --> prisma: Deletion count
+
+loop For each ActivityData record (9 total)
+  prisma -> db: INSERT ActivityData\n(auditId, category, scope, value, tier,\nfactor, emissions, dataSource)
+  db --> prisma: ✓ Inserted
+end
+
+prisma -> db: UPDATE CarbonAudit\nSET totalEmissions, scope1Total,\nscope2Total, scope3Total,\nstatus = 'CALCULATED'
+
+db --> prisma: ✓ Updated
+
+prisma --> calc_service: CalculatedAudit object
+deactivate prisma
+
+calc_service -> calc_service: Prepare response:\n{ auditId, totalEmissions,\nscope breakdown, activityBreakdown }
+
+calc_service --> schools_ctrl: CalculatedAudit response
+deactivate calc_service
+
+schools_ctrl -> frontend: HTTP 200 OK\n{\n  auditId: "uuid",\n  totalEmissions: 12345.67,\n  scope1Total: 4567.89,\n  scope2Total: 5678.90,\n  scope3Total: 2098.88,\n  activityBreakdown: [...]\n}
+
+deactivate schools_ctrl
+
+activate frontend
+frontend -> frontend: Display success message:\n"Audit calculated successfully!"
+frontend -> frontend: Show emissions breakdown\nby scope and category
+frontend -> frontend: Update dashboard\nwith new total emissions
+
+admin <- frontend: Audit result displayed\nwith charts & breakdown
+
+deactivate frontend
+
+note over admin, frontend
+  Success: Carbon audit submitted,
+  calculated, and stored.
+  Admin can now view reports,
+  receive recommendations,
+  and share with stakeholders.
+end note
+
+@enduml

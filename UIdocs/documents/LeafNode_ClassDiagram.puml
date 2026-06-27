@@ -1,0 +1,357 @@
+@startuml LeafNode_ClassDiagram
+title CoPaila - Carbon Audit Platform: Class Diagram
+
+package "Database Models" {
+  class User {
+    - id: String (UUID)
+    - email: String
+    - password: String (hashed)
+    - firstName: String
+    - lastName: String
+    - role: UserRole (SUPER_ADMIN|SCHOOL_ADMIN|TEACHER|STUDENT|INDIVIDUAL)
+    - createdAt: DateTime
+    - updatedAt: DateTime
+    - schoolId: String? (FK)
+    - individualProfile: IndividualProfile?
+    ---
+    + getFullName(): String
+    + hasRole(role: UserRole): Boolean
+    + getPermissions(): Permission[]
+  }
+
+  class School {
+    - id: String (UUID)
+    - schoolName: String
+    - registrationStatus: SchoolStatus
+    - province: Province
+    - areaType: AreaType
+    - schoolType: SchoolType
+    - enrollment: EnrollmentRange
+    - electricity: ElectricityAvailability
+    - internet: InternetConnectivity
+    - language: PreferredLanguage
+    - address: String
+    - gpsCoordinates: String
+    - principalEmail: String
+    - phone: String
+    - admissionYear: Int
+    - createdAt: DateTime
+    - updatedAt: DateTime
+    ---
+    + registerSchool(): void
+    + updateProfile(): void
+    + getAdmins(): User[]
+    + getAudits(): CarbonAudit[]
+  }
+
+  class IndividualProfile {
+    - id: String (UUID)
+    - userId: String (FK)
+    - role: IndividualRole
+    - organization: String?
+    - createdAt: DateTime
+    ---
+    + getParticipationRecords(): void
+  }
+
+  class CarbonAudit {
+    - id: String (UUID)
+    - schoolId: String (FK)
+    - academicYear: Int
+    - month: Int
+    - enrollment: Int
+    - status: AuditStatus (DRAFT|SUBMITTED|CALCULATED)
+    - submittedById: String (FK to User)
+    - totalEmissions: Decimal
+    - scope1Total: Decimal
+    - scope2Total: Decimal
+    - scope3Total: Decimal
+    - createdAt: DateTime
+    - submittedAt: DateTime?
+    - calculatedAt: DateTime?
+    ---
+    + submitAudit(): void
+    + calculateEmissions(): void
+    + getActivityBreakdown(): ActivityData[]
+    + generateReport(): Report
+  }
+
+  class ActivityData {
+    - id: String (UUID)
+    - auditId: String (FK)
+    - category: ActivityCategory
+    - scope: EmissionScope
+    - value: Decimal
+    - unit: String
+    - tier: DataTier
+    - emissionsFactor: Decimal
+    - emissions: Decimal (calculated)
+    - dataSource: String
+    - createdAt: DateTime
+    ---
+    + calculateEmissions(): Decimal
+    + getConfidenceLevel(): String
+  }
+
+  enum UserRole {
+    SUPER_ADMIN
+    SCHOOL_ADMIN
+    TEACHER
+    STUDENT
+    INDIVIDUAL
+  }
+
+  enum SchoolStatus {
+    DRAFT
+    PENDING
+    APPROVED
+    ACTIVE
+    REJECTED
+    SUSPENDED
+  }
+
+  enum AuditStatus {
+    DRAFT
+    SUBMITTED
+    CALCULATED
+  }
+
+  enum ActivityCategory {
+    ELECTRICITY
+    GENERATOR_FUEL
+    VEHICLE_FUEL
+    COOKING_FUEL
+    REFRIGERANT
+    COMMUTE
+    PAPER
+    FOOD
+    WASTE
+  }
+
+  enum DataTier {
+    MEASURED
+    ESTIMATED
+    DEFAULT
+  }
+
+  enum EmissionScope {
+    SCOPE_1
+    SCOPE_2
+    SCOPE_3
+  }
+
+  class SchoolRegistrationDraft {
+    - id: String
+    - schoolName: String?
+    - contactName: String?
+    - email: String
+    - province: Province?
+    - areaType: AreaType?
+    - enrollment: EnrollmentRange?
+    - createdAt: DateTime
+    ---
+    + completeStep(): void
+    + submitRegistration(): void
+  }
+
+  class Recommendation {
+    - id: String (UUID)
+    - schoolId: String (FK)
+    - category: ActivityCategory
+    - priority: Int
+    - description: String
+    - estimatedReduction: Decimal
+    - implementationCost: Decimal?
+    - createdAt: DateTime
+    ---
+    + getRankings(): Recommendation[]
+    + getImpactScore(): Decimal
+  }
+
+  class Achievement {
+    - id: String (UUID)
+    - userId: String (FK)
+    - badgeType: String
+    - description: String
+    - earnedAt: DateTime
+    ---
+    + unlock(): void
+  }
+}
+
+package "Service Layer" {
+  class AuthService {
+    - jwtSecret: String
+    ---
+    + register(dto): User
+    + login(email, password): AuthToken
+    + validateToken(token): User
+    + refreshToken(token): AuthToken
+  }
+
+  class SchoolsService {
+    ---
+    + registerSchool(dto): School
+    + updateSchool(id, dto): School
+    + getSchool(id): School
+    + getSchools(filters): School[]
+    + approveSchool(id): void
+    + rejectSchool(id, reason): void
+  }
+
+  class UsersService {
+    ---
+    + createUser(dto): User
+    + updateUser(id, dto): User
+    + getUsersBySchool(schoolId): User[]
+    + assignRole(userId, role): void
+  }
+
+  class CarbonCalculatorService {
+    - emissionFactors: Map
+    ---
+    + submitAudit(schoolId, dto): CarbonAudit
+    + calculateEmissions(inputs, context): CalculationResult
+    + generateRecommendations(auditId): Recommendation[]
+    + exportReport(auditId): Report
+  }
+
+  class OmrService {
+    ---
+    + processOmrSheet(file): RawOMRData
+    + parseOMRTemplate(templateJson): Template
+    + mapOMRToAudit(rawData, template): AuditDto
+    + validateOMRData(data): ValidationResult
+  }
+
+  class CalculationEngine {
+    - categoryProcessors: Map
+    ---
+    + runCalculation(inputs, context): CalculationResult
+    + processCategory(category, inputs): CategoryResult
+    + applyEmissionFactor(value, factor): Decimal
+  }
+}
+
+package "Controller Layer" {
+  class AuthController {
+    - authService: AuthService
+    ---
+    + register(dto): AuthResponse
+    + login(dto): AuthResponse
+    + logout(token): void
+  }
+
+  class SchoolsController {
+    - schoolsService: SchoolsService
+    ---
+    + register(dto): School
+    + getSchool(id): School
+    + updateSchool(id, dto): School
+    + approveSchool(id): void
+  }
+
+  class CarbonCalculatorController {
+    - calculatorService: CarbonCalculatorService
+    ---
+    + submitAudit(dto): AuditResponse
+    + getAudit(auditId): CarbonAudit
+    + generateReport(auditId): Report
+  }
+
+  class OmrController {
+    - omrService: OmrService
+    ---
+    + scanOmrSheet(file): RawOMRData
+    + scanAndSubmit(file, metadata): AuditResponse
+  }
+}
+
+package "React Frontend Components" {
+  class AuthContext {
+    - user: User?
+    - isAuthenticated: Boolean
+    - token: String?
+    ---
+    + login(credentials): void
+    + logout(): void
+    + register(data): void
+  }
+
+  class AppContext {
+    - currentSchool: School?
+    - currentAudit: CarbonAudit?
+    - isLoading: Boolean
+    ---
+    + setCurrentSchool(school): void
+    + setCurrentAudit(audit): void
+  }
+
+  class Dashboard {
+    - currentUser: User
+    - school: School
+    - audits: CarbonAudit[]
+    ---
+    + renderStudentDashboard(): JSX
+    + renderTeacherDashboard(): JSX
+    + renderAdminDashboard(): JSX
+  }
+
+  class CarbonCalculatorUI {
+    - selectedCategory: ActivityCategory?
+    ---
+    + handleDataEntry(data): void
+    + handleTierSelection(tier): void
+    + submitAudit(): void
+  }
+
+  class OMRScanComponent {
+    - uploadedFile: File?
+    - scanResult: RawOMRData?
+    ---
+    + handleFileUpload(file): void
+    + displayPreview(): JSX
+    + submitScan(): void
+  }
+
+  class PetRPG {
+    - petState: PetState
+    - tasks: Task[]
+    ---
+    + completeTask(taskId): void
+    + updatePetState(): void
+  }
+
+  class Leaderboard {
+    - schools: School[]
+    - students: User[]
+    ---
+    + getRanking(): User[]
+    + getSchoolRanking(): School[]
+  }
+}
+
+' Relationships
+User "1" -- "*" CarbonAudit: submits
+User "1" -- "*" Achievement: earns
+User "*" -- "1" School: works_at
+School "1" -- "*" CarbonAudit: has
+CarbonAudit "1" -- "*" ActivityData: contains
+CarbonAudit "1" -- "*" Recommendation: receives
+School "1" -- "0..1" SchoolRegistrationDraft: drafts
+IndividualProfile "1" -- "1" User: belongs_to
+
+AuthService -- AuthController
+SchoolsService -- SchoolsController
+CarbonCalculatorService -- CarbonCalculatorController
+OmrService -- OmrController
+CarbonCalculatorService -- CalculationEngine
+OmrService -- "uses" CarbonCalculatorService
+
+AuthContext -- AuthController
+AppContext -- "uses" CarbonCalculatorUI
+Dashboard -- AuthContext
+CarbonCalculatorUI -- CarbonCalculatorController
+OMRScanComponent -- OmrController
+
+@enduml

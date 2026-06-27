@@ -1,0 +1,47 @@
+@startuml LeafNode_DFD_Level0
+title CoPaila - Level 0 Data Flow Diagram (Context Diagram)
+
+!define ENTITYCOLOUR #FFD8B3
+!define PROCESSCOLOUR #B3D9FF
+!define DATACOLOUR #D9FFB3
+
+entity "School Admin\n(User)" as school_admin <<ENTITYCOLOUR>>
+entity "Student/Teacher\n(User)" as student <<ENTITYCOLOUR>>
+entity "System Admin\n(Super User)" as admin <<ENTITYCOLOUR>>
+
+rectangle "CoPaila Carbon Audit Platform" as system <<PROCESSCOLOUR>> {
+}
+
+database "PostgreSQL\nDatabase" as db <<DATACOLOUR>>
+entity "OMRChecker\nService" as omr <<ENTITYCOLOUR>>
+entity "External\nData Sources" as external <<ENTITYCOLOUR>>
+
+' Data flows from external entities
+school_admin --> system: School Registration, Audit Data, OMR Sheets
+student --> system: Login, View Dashboards, Complete Tasks, View Results
+admin --> system: Manage Users, Approve Schools, Monitor System
+system --> school_admin: Reports, Recommendations, Audit Results
+system --> student: Dashboard, Progress, Achievements, Leaderboard
+system --> admin: System Status, Analytics, Audit Logs
+
+' Database interaction
+system <--> db: Read/Write School Data, User Data, Audit Records, Activity Data
+system <--> omr: Send OMR Image, Receive Scanned Data
+external --> system: Emission Factors, Weather Data, Regional Statistics
+
+' OMR interaction
+school_admin --> omr: OMR Sheet Images (via Platform)
+omr --> system: Scanned OMR Data (CSV/JSON)
+
+note right of system
+CoPaila System handles:
+- User Authentication & Authorization
+- School Registration & Management
+- Carbon Audit Data Collection
+- OMR Sheet Processing
+- Carbon Emissions Calculation
+- Report Generation
+- Gamification & Achievements
+end note
+
+@enduml

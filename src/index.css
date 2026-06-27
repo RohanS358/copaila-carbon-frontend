@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Google Sans';
+  src: url('./assets/GoogleSans-VariableFont_GRAD,opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  html {
+    font-family: 'Google Sans', sans-serif;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply bg-white text-[#1E2F1E];
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+  }
+
+  h1, .text-display-lg {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #1E2F1E;
+  }
+  h2, .text-headline-md {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: #1E2F1E;
+  }
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #1E2F1E;
+  }
+  .text-body-md {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+  }
+  .text-label-sm {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 16px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .text-data-mono {
+    font-family: 'Google Sans', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+}
+
+@layer components {
+  /* ── Flat buttons — NO shadows, scale feedback ── */
+  .btn-primary {
+    @apply bg-[#2D4A32] text-white font-bold py-3 px-6 rounded-lg
+           transition-all duration-200 hover:scale-105 hover:bg-[#1E2F1E]
+           active:scale-100 cursor-pointer;
+    box-shadow: none !important;
+  }
+  .btn-secondary {
+    @apply bg-[#EEF2DC] text-[#1E2F1E] font-bold py-3 px-6 rounded-lg
+           transition-all duration-200 hover:scale-105 hover:bg-[#d8e8c0]
+           active:scale-100 cursor-pointer;
+    box-shadow: none !important;
+  }
+  .btn-outline {
+    @apply border-2 border-[#2D4A32] text-[#2D4A32] font-bold py-3 px-6 rounded-lg bg-transparent
+           transition-all duration-200 hover:bg-[#2D4A32] hover:text-white hover:scale-105
+           active:scale-100 cursor-pointer;
+    box-shadow: none !important;
+  }
+  .btn-student {
+    @apply bg-[#2D4A32] text-white font-bold py-3 px-6 rounded-lg
+           transition-all duration-200 hover:scale-105 hover:bg-[#1E2F1E]
+           active:scale-100 cursor-pointer;
+    box-shadow: none !important;
+  }
+
+  /* ── Flat cards — zero shadow, solid color block ── */
+  .card {
+    @apply bg-white rounded-lg p-6 border border-[#d8e8c0];
+    box-shadow: none !important;
+  }
+  .card-hover {
+    @apply card transition-all duration-200 hover:scale-[1.02] cursor-pointer;
+    box-shadow: none !important;
+  }
+  .card-lg {
+    @apply bg-white rounded-lg p-8 border border-[#d8e8c0];
+    box-shadow: none !important;
+  }
+
+  /* ── Inputs — flat, gray bg, hard border on focus ── */
+  .input-field {
+    @apply w-full border-0 rounded-lg px-4 py-3
+           text-[#1E2F1E] bg-[#EEF2DC]
+           transition-colors duration-150
+           focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#2D4A32]
+           placeholder:text-[#7BAE7F];
+    box-shadow: none !important;
+  }
+
+  /* ── Tag/badge ── */
+  .badge {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-md text-[11px] font-bold
+           bg-[#EEF2DC] text-[#2D4A32];
+  }
+
+  /* ── Section heading ── */
+  .section-title {
+    @apply text-2xl font-black text-[#1E2F1E] tracking-tight;
+  }
+
+  /* ── Flat stat number ── */
+  .stat-number {
+    @apply text-4xl font-black tracking-tight;
+  }
+}
+
+/* ── Global shadow wipe — nothing in the project should cast a shadow ── */
+*:not([style*="box-shadow: 0 0"]) {
+  box-shadow: none !important;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: #f5f7ee; }
+::-webkit-scrollbar-thumb { background: #d8e8c0; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #7BAE7F; }
+
+/* ── Progress bars ── */
+.progress-bar  { height: 10px; border-radius: 2px; background: #EEF2DC; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 2px; transition: width 0.8s ease; background: #2D4A32; }
+.progress-fill-student { height: 100%; border-radius: 2px; transition: width 0.8s ease; background: #4E7D5B; }

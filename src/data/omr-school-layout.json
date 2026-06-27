@@ -1,0 +1,512 @@
+{
+  "_generated": "build-omr-assets.mjs",
+  "sheet": "school",
+  "page": [
+    1000,
+    1372
+  ],
+  "bubbleR": 9,
+  "title": "School Carbon Audit Form",
+  "hint": "Tick (●) one circle for each question. Skip any you’re unsure about.",
+  "sections": [
+    {
+      "letter": "A",
+      "title": "About the School",
+      "x": 40,
+      "y": 118,
+      "w": 920,
+      "h": 110,
+      "questions": [
+        {
+          "n": 1,
+          "key": "enrollment",
+          "text": "How many students study at the school?",
+          "textAt": [
+            56,
+            164
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 184,
+              "letter": "A",
+              "label": "Under 100"
+            },
+            {
+              "cx": 176,
+              "cy": 184,
+              "letter": "B",
+              "label": "100–300"
+            },
+            {
+              "cx": 278,
+              "cy": 184,
+              "letter": "C",
+              "label": "300–600"
+            },
+            {
+              "cx": 379,
+              "cy": 184,
+              "letter": "D",
+              "label": "600–1000"
+            },
+            {
+              "cx": 481,
+              "cy": 184,
+              "letter": "E",
+              "label": "Over 1000"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "letter": "B",
+      "title": "Electricity & Energy",
+      "x": 40,
+      "y": 244,
+      "w": 920,
+      "h": 174,
+      "questions": [
+        {
+          "n": 2,
+          "key": "electricity",
+          "text": "About how much electricity does the school use each month?",
+          "textAt": [
+            56,
+            290
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 310,
+              "letter": "A",
+              "label": "None / very little"
+            },
+            {
+              "cx": 236,
+              "cy": 310,
+              "letter": "B",
+              "label": "Under 100 units"
+            },
+            {
+              "cx": 397,
+              "cy": 310,
+              "letter": "C",
+              "label": "100–500 units"
+            },
+            {
+              "cx": 557,
+              "cy": 310,
+              "letter": "D",
+              "label": "500–1500 units"
+            },
+            {
+              "cx": 718,
+              "cy": 310,
+              "letter": "E",
+              "label": "Over 1500 units"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "key": "solar",
+          "text": "Does the school have rooftop solar panels?",
+          "textAt": [
+            56,
+            354
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 374,
+              "letter": "A",
+              "label": "Yes"
+            },
+            {
+              "cx": 137,
+              "cy": 374,
+              "letter": "B",
+              "label": "No"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "letter": "C",
+      "title": "Fuel & Machines",
+      "x": 40,
+      "y": 434,
+      "w": 920,
+      "h": 302,
+      "questions": [
+        {
+          "n": 4,
+          "key": "generator",
+          "text": "Does the school use a diesel / petrol generator?",
+          "textAt": [
+            56,
+            480
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 500,
+              "letter": "A",
+              "label": "No"
+            },
+            {
+              "cx": 282,
+              "cy": 500,
+              "letter": "B",
+              "label": "Sometimes (load-shedding)"
+            },
+            {
+              "cx": 489,
+              "cy": 500,
+              "letter": "C",
+              "label": "Most days"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "key": "vehicle",
+          "text": "Does the school own vehicles (bus / van) that use fuel?",
+          "textAt": [
+            56,
+            544
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 564,
+              "letter": "A",
+              "label": "Yes"
+            },
+            {
+              "cx": 137,
+              "cy": 564,
+              "letter": "B",
+              "label": "No"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "key": "lpg",
+          "text": "Is cooking gas (LPG) used at the school?",
+          "textAt": [
+            56,
+            608
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 628,
+              "letter": "A",
+              "label": "Yes"
+            },
+            {
+              "cx": 137,
+              "cy": 628,
+              "letter": "B",
+              "label": "No"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "key": "ac",
+          "text": "How many AC or refrigerator units are there?",
+          "textAt": [
+            56,
+            672
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 692,
+              "letter": "A",
+              "label": "None"
+            },
+            {
+              "cx": 190,
+              "cy": 692,
+              "letter": "B",
+              "label": "1–2"
+            },
+            {
+              "cx": 304,
+              "cy": 692,
+              "letter": "C",
+              "label": "3–5"
+            },
+            {
+              "cx": 419,
+              "cy": 692,
+              "letter": "D",
+              "label": "More than 5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "letter": "D",
+      "title": "Travel, Waste & Food",
+      "x": 40,
+      "y": 752,
+      "w": 920,
+      "h": 558,
+      "questions": [
+        {
+          "n": 8,
+          "key": "commuteMode",
+          "text": "How do most students travel to school?",
+          "textAt": [
+            56,
+            798
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 818,
+              "letter": "A",
+              "label": "Walk / Cycle"
+            },
+            {
+              "cx": 196,
+              "cy": 818,
+              "letter": "B",
+              "label": "Bus"
+            },
+            {
+              "cx": 317,
+              "cy": 818,
+              "letter": "C",
+              "label": "Motorbike"
+            },
+            {
+              "cx": 439,
+              "cy": 818,
+              "letter": "D",
+              "label": "Private car"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "key": "commuteDist",
+          "text": "How far do most students travel (one way)?",
+          "textAt": [
+            56,
+            862
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 882,
+              "letter": "A",
+              "label": "Under 2 km"
+            },
+            {
+              "cx": 183,
+              "cy": 882,
+              "letter": "B",
+              "label": "2–5 km"
+            },
+            {
+              "cx": 291,
+              "cy": 882,
+              "letter": "C",
+              "label": "5–10 km"
+            },
+            {
+              "cx": 399,
+              "cy": 882,
+              "letter": "D",
+              "label": "Over 10 km"
+            }
+          ]
+        },
+        {
+          "n": 10,
+          "key": "paper",
+          "text": "How much paper does the school use each month?",
+          "textAt": [
+            56,
+            926
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 946,
+              "letter": "A",
+              "label": "Very little"
+            },
+            {
+              "cx": 203,
+              "cy": 946,
+              "letter": "B",
+              "label": "A few reams"
+            },
+            {
+              "cx": 331,
+              "cy": 946,
+              "letter": "C",
+              "label": "5–15 reams"
+            },
+            {
+              "cx": 458,
+              "cy": 946,
+              "letter": "D",
+              "label": "Over 15 reams"
+            }
+          ]
+        },
+        {
+          "n": 11,
+          "key": "waste",
+          "text": "How much waste does the school produce each week?",
+          "textAt": [
+            56,
+            990
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 1010,
+              "letter": "A",
+              "label": "Under 20 kg"
+            },
+            {
+              "cx": 190,
+              "cy": 1010,
+              "letter": "B",
+              "label": "20–50 kg"
+            },
+            {
+              "cx": 304,
+              "cy": 1010,
+              "letter": "C",
+              "label": "50–100 kg"
+            },
+            {
+              "cx": 419,
+              "cy": 1010,
+              "letter": "D",
+              "label": "Over 100 kg"
+            }
+          ]
+        },
+        {
+          "n": 12,
+          "key": "segregation",
+          "text": "How is waste separated into bins?",
+          "textAt": [
+            56,
+            1054
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 1074,
+              "letter": "A",
+              "label": "Not separated"
+            },
+            {
+              "cx": 203,
+              "cy": 1074,
+              "letter": "B",
+              "label": "2 bins"
+            },
+            {
+              "cx": 331,
+              "cy": 1074,
+              "letter": "C",
+              "label": "3 bins"
+            },
+            {
+              "cx": 458,
+              "cy": 1074,
+              "letter": "D",
+              "label": "4+ bins"
+            }
+          ]
+        },
+        {
+          "n": 13,
+          "key": "composting",
+          "text": "Does the school compost food / garden waste?",
+          "textAt": [
+            56,
+            1118
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 1138,
+              "letter": "A",
+              "label": "Yes"
+            },
+            {
+              "cx": 137,
+              "cy": 1138,
+              "letter": "B",
+              "label": "No"
+            }
+          ]
+        },
+        {
+          "n": 14,
+          "key": "recycling",
+          "text": "Does the school recycle paper or plastic?",
+          "textAt": [
+            56,
+            1182
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 1202,
+              "letter": "A",
+              "label": "Yes"
+            },
+            {
+              "cx": 137,
+              "cy": 1202,
+              "letter": "B",
+              "label": "No"
+            }
+          ]
+        },
+        {
+          "n": 15,
+          "key": "canteen",
+          "text": "Does the school have a hostel or canteen?",
+          "textAt": [
+            56,
+            1246
+          ],
+          "bubbles": [
+            {
+              "cx": 75,
+              "cy": 1266,
+              "letter": "A",
+              "label": "Yes"
+            },
+            {
+              "cx": 137,
+              "cy": 1266,
+              "letter": "B",
+              "label": "No"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

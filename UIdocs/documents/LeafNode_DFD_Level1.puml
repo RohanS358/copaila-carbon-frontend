@@ -1,0 +1,110 @@
+@startuml LeafNode_DFD_Level1
+title CoPaila - Level 1 Data Flow Diagram (System Processes)
+
+!define ENTITYCOLOUR #FFD8B3
+!define PROCESSCOLOUR #B3D9FF
+!define DATACOLOUR #D9FFB3
+!define STORECOLOUR #FFE6E6
+
+entity "School Admin" as school_admin <<ENTITYCOLOUR>>
+entity "Student/Teacher" as user <<ENTITYCOLOUR>>
+entity "System Admin" as admin <<ENTITYCOLOUR>>
+entity "OMRChecker\nService" as omr <<ENTITYCOLOUR>>
+
+rectangle "Authentication & Authorization" as p1 <<PROCESSCOLOUR>> {
+}
+
+rectangle "School Registration\n& Management" as p2 <<PROCESSCOLOUR>> {
+}
+
+rectangle "Carbon Audit\nData Collection" as p3 <<PROCESSCOLOUR>> {
+}
+
+rectangle "OMR Sheet\nProcessing" as p4 <<PROCESSCOLOUR>> {
+}
+
+rectangle "Carbon\nCalculation" as p5 <<PROCESSCOLOUR>> {
+}
+
+rectangle "Report & Analytics\nGeneration" as p6 <<PROCESSCOLOUR>> {
+}
+
+rectangle "User Engagement\n& Gamification" as p7 <<PROCESSCOLOUR>> {
+}
+
+database "User Data\nStore" as ds1 <<STORECOLOUR>>
+database "School Data\nStore" as ds2 <<STORECOLOUR>>
+database "Audit & Activity\nData Store" as ds3 <<STORECOLOUR>>
+database "Emission Factors\nStore" as ds4 <<STORECOLOUR>>
+database "Reports &\nRecommendations Store" as ds5 <<STORECOLOUR>>
+database "Achievement &\nProgress Store" as ds6 <<STORECOLOUR>>
+
+' Authentication flows
+school_admin --> p1: Login Credentials
+user --> p1: Login Credentials
+admin --> p1: Login Credentials
+p1 --> ds1: Verify User
+ds1 --> p1: User Info
+p1 --> school_admin: Auth Token / Access Denied
+p1 --> user: Auth Token / Access Denied
+p1 --> admin: Auth Token / Access Denied
+
+' School Registration flows
+school_admin --> p2: School Registration Form
+p2 --> ds2: Store School Data
+ds2 --> p2: School Info
+p2 --> admin: Pending Approvals
+admin --> p2: Approve/Reject School
+p2 --> school_admin: Approval Status
+p2 --> ds1: Create School Admin User
+
+' Carbon Audit Data Collection flows
+school_admin --> p3: Manual Activity Data Entry
+p3 --> ds3: Store Activity Records
+user --> p3: View Audit Data
+school_admin --> p4: Upload OMR Sheet Image
+p4 --> omr: Send OMR Image
+omr --> p4: Return Scanned Data (CSV)
+p4 --> ds3: Store OMR Scanned Data
+p4 --> school_admin: Scanned Data Review
+
+' Carbon Calculation flows
+p3 --> p5: Activity Data Input
+p4 --> p5: OMR Scanned Data
+ds4 --> p5: Emission Factors & Context
+p5 --> ds3: Store Calculation Results
+p5 --> p6: Calculation Results
+
+' Report Generation flows
+ds3 --> p6: Activity & Audit Data
+p6 --> ds5: Store Reports
+ds5 --> p6: Report Data
+p6 --> school_admin: Reports & Recommendations
+p6 --> user: Dashboard Data
+
+' Gamification flows
+user --> p7: Complete Tasks / Activities
+ds3 --> p7: Audit Participation Data
+p7 --> ds6: Update Achievements
+ds6 --> p7: Achievement Data
+p7 --> user: Badges, Progress, Leaderboard
+
+' Data store interconnections
+ds1 -.-> p7: User Profile Data
+ds2 -.-> p6: School Comparison Data
+ds3 -.-> p7: Engagement Metrics
+
+note bottom
+D1: User credentials
+D2: School registration form
+D3: Audit data (manual entry)
+D4: OMR sheet image
+D5: Scanned OMR data (CSV)
+D6: Emission factors
+D7: Calculation results
+D8: Reports and recommendations
+D9: Achievement updates
+D10: Leaderboard data
+end note
+
+@enduml

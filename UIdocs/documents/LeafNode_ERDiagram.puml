@@ -1,0 +1,205 @@
+@startuml LeafNode_ERDiagram
+title CoPaila - Entity Relationship Diagram
+
+!define ENTITY_COLOUR #E1F5E1
+!define ATTRIBUTE_COLOUR #F0F0F0
+
+entity User {
+  * id: UUID <<PK>>
+  --
+  * email: String <<UK>>
+  * password: String (hashed)
+  * firstName: String
+  * lastName: String
+  * role: UserRole
+  * isActive: Boolean
+  ? schoolId: UUID <<FK>>
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+entity School {
+  * id: UUID <<PK>>
+  --
+  * schoolName: String
+  * email: String <<UK>>
+  * phone: String
+  * registrationStatus: SchoolStatus
+  * province: Province
+  * areaType: AreaType
+  * schoolType: SchoolType
+  * enrollment: EnrollmentRange
+  electricity: ElectricityAvailability
+  internet: InternetConnectivity
+  language: PreferredLanguage
+  address: String
+  gpsCoordinates: String
+  admissionYear: Int
+  principalEmail: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+entity IndividualProfile {
+  * id: UUID <<PK>>
+  --
+  * userId: UUID <<FK>>
+  * role: IndividualRole
+  ? organization: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+entity SchoolRegistrationDraft {
+  * id: UUID <<PK>>
+  --
+  * email: String <<UK>>
+  schoolName: String
+  contactName: String
+  contactRole: SchoolContactRole
+  province: Province
+  areaType: AreaType
+  enrollment: EnrollmentRange
+  createdAt: DateTime
+  expiresAt: DateTime
+}
+
+entity CarbonAudit {
+  * id: UUID <<PK>>
+  --
+  * schoolId: UUID <<FK>>
+  * academicYear: Int
+  * month: Int
+  * enrollment: Int
+  * status: AuditStatus
+  * submittedById: UUID <<FK>>
+  totalEmissions: Decimal
+  scope1Total: Decimal
+  scope2Total: Decimal
+  scope3Total: Decimal
+  createdAt: DateTime
+  submittedAt: DateTime
+  calculatedAt: DateTime
+  unique(schoolId, academicYear, month)
+}
+
+entity ActivityData {
+  * id: UUID <<PK>>
+  --
+  * auditId: UUID <<FK>>
+  * category: ActivityCategory
+  * scope: EmissionScope
+  * value: Decimal
+  * unit: String
+  * tier: DataTier
+  * emissionsFactor: Decimal
+  * emissions: Decimal (calculated)
+  ? dataSource: String
+  createdAt: DateTime
+}
+
+entity Recommendation {
+  * id: UUID <<PK>>
+  --
+  * schoolId: UUID <<FK>>
+  * category: ActivityCategory
+  * priority: Int
+  * description: String
+  ? estimatedReduction: Decimal
+  ? implementationCost: Decimal
+  createdAt: DateTime
+}
+
+entity Achievement {
+  * id: UUID <<PK>>
+  --
+  * userId: UUID <<FK>>
+  * badgeType: String
+  description: String
+  * earnedAt: DateTime
+}
+
+entity StudentTask {
+  * id: UUID <<PK>>
+  --
+  * userId: UUID <<FK>>
+  * taskType: String
+  * description: String
+  * points: Int
+  * isCompleted: Boolean
+  * completedAt: DateTime
+  createdAt: DateTime
+}
+
+entity LeaderboardEntry {
+  * id: UUID <<PK>>
+  --
+  * userId: UUID <<FK>>
+  * schoolId: UUID <<FK>>
+  * totalPoints: Int
+  * rank: Int
+  * updatedAt: DateTime
+}
+
+entity AuditLog {
+  * id: UUID <<PK>>
+  --
+  * userId: UUID <<FK>>
+  * action: String
+  * entityType: String
+  * entityId: UUID
+  * oldValues: JSON
+  * newValues: JSON
+  * timestamp: DateTime
+  * ipAddress: String
+}
+
+' Relationships
+User ||--o{ IndividualProfile: "has"
+User "many" --|| "one" School: "works_at"
+User ||--o{ CarbonAudit: "submits"
+User ||--o{ Achievement: "earns"
+User ||--o{ StudentTask: "completes"
+User ||--o{ AuditLog: "initiates"
+
+School ||--o{ CarbonAudit: "has"
+School ||--o{ ActivityData: "collects"
+School ||--o{ Recommendation: "receives"
+School ||--o{ LeaderboardEntry: "appears_in"
+School ||--o{ SchoolRegistrationDraft: "creates_draft"
+
+CarbonAudit ||--o{ ActivityData: "contains"
+CarbonAudit ||--o{ Recommendation: "generates_from"
+CarbonAudit ||--o{ AuditLog: "tracked_by"
+
+Achievement ||--o{ AuditLog: "recorded_in"
+StudentTask ||--o{ AuditLog: "recorded_in"
+
+note bottom of School
+  School is the central hub:
+  - Connected to Users (admins, teachers, students)
+  - Connected to CarbonAudit history
+  - Connected to ActivityData collected
+  - Connected to Recommendations generated
+end note
+
+note bottom of CarbonAudit
+  Composite key on:
+  (schoolId, academicYear, month)
+  ensures one audit per school
+  per academic period
+end note
+
+note bottom of ActivityData
+  9 categories map to 3 GHG scopes:
+  Scope 1 (Direct): Generator, Vehicle, Cooking, Refrigerant
+  Scope 2 (Energy): Electricity
+  Scope 3 (Indirect): Commute, Paper, Food, Waste
+  
+  Each record tracks data tier:
+  Tier 1 (Measured) → Green (high confidence)
+  Tier 2 (Estimated) → Yellow (medium)
+  Tier 3 (Default)  → Red (low confidence)
+end note
+
+@enduml

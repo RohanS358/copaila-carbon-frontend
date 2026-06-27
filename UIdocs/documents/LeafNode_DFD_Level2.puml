@@ -1,0 +1,128 @@
+@startuml LeafNode_DFD_Level2
+title CoPaila - Level 2 Data Flow Diagram (Carbon Calculation Subprocess Detail)
+
+!define ENTITYCOLOUR #FFD8B3
+!define PROCESSCOLOUR #B3D9FF
+!define DATACOLOUR #D9FFB3
+!define STORECOLOUR #FFE6E6
+
+entity "School Admin" as admin <<ENTITYCOLOUR>>
+entity "Audit System" as audit_sys <<ENTITYCOLOUR>>
+
+' Input sources
+rectangle "Activity Data\nCollection" as p1 <<PROCESSCOLOUR>> {
+}
+
+' Carbon Calculation Subprocess - Expanded
+rectangle "Prepare Audit\nContext" as p2 <<PROCESSCOLOUR>> {
+}
+
+rectangle "Extract Category\nInputs" as p3 <<PROCESSCOLOUR>> {
+}
+
+rectangle "Calculate Scope 1\n(Direct Emissions)" as p4a <<PROCESSCOLOUR>> {
+}
+
+rectangle "Calculate Scope 2\n(Energy Emissions)" as p4b <<PROCESSCOLOUR>> {
+}
+
+rectangle "Calculate Scope 3\n(Indirect Emissions)" as p4c <<PROCESSCOLOUR>> {
+}
+
+rectangle "Aggregate Results\n& Store Activities" as p5 <<PROCESSCOLOUR>> {
+}
+
+rectangle "Generate Summary\nReport" as p6 <<PROCESSCOLOUR>> {
+}
+
+' Data stores
+database "School Profile\nData" as ds_school <<STORECOLOUR>>
+database "Audit Header\nData" as ds_audit <<STORECOLOUR>>
+database "Activity Data\nRecords" as ds_activity <<STORECOLOUR>>
+database "Emission Factors\nLookup" as ds_factors <<STORECOLOUR>>
+database "Calculation Results\nStore" as ds_results <<STORECOLOUR>>
+
+' Scope-specific details
+database "Fuel Data\n(Generator, Vehicle, Cooking)" as ds_scope1 <<STORECOLOUR>>
+database "Electricity Data\n(Grid, Refrigerant)" as ds_scope2 <<STORECOLOUR>>
+database "Commute, Paper,\nFood, Waste Data" as ds_scope3 <<STORECOLOUR>>
+
+' Process flows - Input
+admin --> p1: Audit Submission Data
+audit_sys --> p1: OMR Scanned Data
+p1 --> p2: Raw Activity Data
+
+' Process flows - Context Preparation
+p2 --> ds_school: Get School Info
+ds_school --> p2: Enrollment, Area Type, Province
+p2 --> ds_audit: Create Audit Header
+p2 --> p3: School Context & Academic Year
+
+' Category Input Extraction
+p3 --> ds_activity: Validate Input Data
+ds_activity --> p3: Existing Activity Records
+p3 --> p4a: Scope 1 Categories
+p3 --> p4b: Scope 2 Categories
+p3 --> p4c: Scope 3 Categories
+
+' Scope 1 Calculation (Direct)
+p4a --> ds_factors: Lookup Factors
+p4a --> ds_scope1: Generator, Vehicle, Cooking, Refrigerant
+ds_factors --> p4a: Emission Conversion Factors
+ds_scope1 --> p4a: Activity Values & Units
+p4a --> p5: Scope 1 Totals & Records
+
+' Scope 2 Calculation (Energy)
+p4b --> ds_factors: Lookup Factors
+p4b --> ds_scope2: Electricity, Refrigerant Leakage
+ds_factors --> p4b: Grid Emission Factors
+ds_scope2 --> p4b: kWh Values, Area Type Factors
+p4b --> p5: Scope 2 Totals & Records
+
+' Scope 3 Calculation (Value Chain)
+p4c --> ds_factors: Lookup Factors
+p4c --> ds_scope3: Commute, Paper, Food, Waste
+ds_factors --> p4c: Per-Unit Emission Factors
+ds_scope3 --> p4c: Activity Quantities
+p4c --> p5: Scope 3 Totals & Records
+
+' Result Aggregation
+p5 --> ds_activity: Store All Activity Records
+p5 --> ds_results: Store Aggregated Results
+ds_results --> p5: Total Emissions by Scope
+p5 --> p6: Emission Totals
+
+' Report Generation
+p6 --> ds_audit: Update Audit Status
+p6 --> admin: Carbon Report with Breakdown
+p6 --> audit_sys: Audit Results (for Dashboard)
+
+' Data tier indicators
+note left of p4a
+Tier 1 (Measured):
+  Bill readings,
+  Receipts
+
+Tier 2 (Estimated):
+  Proxy questions,
+  Derived values
+
+Tier 3 (Default):
+  National averages,
+  Regional defaults
+end note
+
+note right of p4c
+Activity Categories:
+• ELECTRICITY (Scope 2)
+• GENERATOR_FUEL (Scope 1)
+• VEHICLE_FUEL (Scope 1)
+• COOKING_FUEL (Scope 1)
+• REFRIGERANT (Scope 1)
+• COMMUTE (Scope 3)
+• PAPER (Scope 3)
+• FOOD (Scope 3)
+• WASTE (Scope 3)
+end note
+
+@enduml

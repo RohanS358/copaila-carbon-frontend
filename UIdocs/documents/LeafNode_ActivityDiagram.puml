@@ -1,0 +1,127 @@
+@startuml LeafNode_ActivityDiagram
+title CoPaila - Carbon Audit Platform: Activity Diagram
+
+' Define swimlanes for different actors
+|Student / User|
+start
+:Access Landing Page;
+:Select Role (Student/Teacher/School Admin);
+if (Already Registered?) then (No)
+  :Choose Registration Type;
+  if (School Registration?) then (Yes)
+    |School Admin|
+    :Fill School Details;
+    :Provide Contact Information;
+    :Verify School Location;
+    :Submit Registration;
+    :Wait for Admin Approval;
+    if (Registration Approved?) then (Yes)
+      :Account Created;
+    else (No)
+      :View Rejection Reason;
+      :Update & Resubmit;
+      :Wait for Admin Approval;
+      if (Approved?) then (Yes)
+        :Account Created;
+      else (No)
+        end
+      endif
+    endif
+  else (Individual)
+    |Student/Researcher|
+    :Fill Individual Details;
+    :Select Role (Student/Teacher/Parent/Researcher);
+    :Submit Registration;
+    :Email Verification;
+    :Account Created;
+  endif
+else (Yes)
+  :Proceed to Login;
+endif
+
+:Login with Credentials;
+if (Authentication Success?) then (Yes)
+  :Access Dashboard;
+else (No)
+  :View Error;
+  :Retry Login;
+  if (Max Attempts?) then (Yes)
+    :Account Locked;
+    end
+  else (No)
+    :Login with Credentials;
+  endif
+endif
+
+|School Admin|
+:View School Dashboard;
+:Access Carbon Audit Section;
+if (Data Collection Method?) then (Manual Entry)
+  :Navigate to School Data Entry;
+  :Fill Activity Categories:;
+  :  - Electricity;
+  :  - Generator Fuel;
+  :  - Vehicle Fuel;
+  :  - Cooking Fuel;
+  :  - Refrigerant;
+  :  - Commute;
+  :  - Paper;
+  :  - Food;
+  :  - Waste;
+  :Select Data Tier (Measured/Estimated/Default);
+  :Submit Activity Data;
+else (OMR Scanning)
+  :Navigate to OMR Scan Section;
+  :Upload/Capture OMR Sheet Image;
+  :System Processes OMR Sheet;
+  :Review Scanned Data;
+  :Confirm Tier Classification;
+  :Submit Audit;
+endif
+
+|Backend System|
+:Validate Input Data;
+if (Data Valid?) then (Yes)
+  :Extract Category Inputs;
+else (No)
+  |School Admin|
+  :Display Validation Errors;
+  :Correct Data;
+  :Resubmit;
+  |Backend System|
+  :Validate Input Data;
+endif
+
+:Set Audit Context (Enrollment, Area Type);
+:Run Carbon Calculation Engine;
+:Process Each Category;
+:  - Apply Emission Factors;
+:  - Calculate Scope 1/2/3;
+:  - Store Activity Records;
+:Generate Total Emissions Report;
+:Store Audit Results in Database;
+
+|Student|
+:View Carbon Dashboard;
+:See Total School Emissions;
+:View Breakdown by Scope;
+:Access Recommendations;
+:Engage in Gamification;
+if (Participate in Challenges?) then (Yes)
+  :Complete Pet RPG Tasks;
+  :Earn Achievement Badges;
+  :Climb Leaderboard;
+  :Unlock Rewards;
+else (No)
+  :View School Forest;
+  :See Historical Trends;
+endif
+
+|All Users|
+:Generate Reports;
+:View Recommendations;
+:Compare with Peer Schools;
+:Plan Reduction Strategies;
+:Track Progress Over Time;
+end
+@enduml

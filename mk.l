@@ -1,0 +1,1 @@
+VITE_API_BASE_URL="https://shequal-backend.onrender.com:3000"

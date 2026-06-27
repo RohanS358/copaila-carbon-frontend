@@ -1,0 +1,183 @@
+{
+  "_note": "Canonical source for the OMR audit sheets. Generator (backend/omr-assets/build-omr-assets.mjs) turns this into per-sheet templates + SVG layouts. Each option's `set` is the payload fragment it contributes; the backend deep-merges the selected options' `set`s into the carbon-audit payload.",
+  "school": {
+    "title": "School Carbon Audit Form",
+    "hint": "Tick (●) one circle for each question. Skip any you’re unsure about.",
+    "submit": true,
+    "sections": [
+      {
+        "letter": "A", "title": "About the School",
+        "questions": [
+          { "key": "enrollment", "q": "How many students study at the school?", "options": [
+            { "label": "Under 100", "set": { "enrollment": 50 } },
+            { "label": "100–300", "set": { "enrollment": 200 } },
+            { "label": "300–600", "set": { "enrollment": 450 } },
+            { "label": "600–1000", "set": { "enrollment": 800 } },
+            { "label": "Over 1000", "set": { "enrollment": 1500 } }
+          ] }
+        ]
+      },
+      {
+        "letter": "B", "title": "Electricity & Energy",
+        "questions": [
+          { "key": "electricity", "q": "About how much electricity does the school use each month?", "options": [
+            { "label": "None / very little", "set": { "electricity": { "measuredKwh": 0 } } },
+            { "label": "Under 100 units", "set": { "electricity": { "measuredKwh": 600 } } },
+            { "label": "100–500 units", "set": { "electricity": { "measuredKwh": 3600 } } },
+            { "label": "500–1500 units", "set": { "electricity": { "measuredKwh": 12000 } } },
+            { "label": "Over 1500 units", "set": { "electricity": { "measuredKwh": 30000 } } }
+          ] },
+          { "key": "solar", "q": "Does the school have rooftop solar panels?", "options": [
+            { "label": "Yes", "set": { "electricity": { "solarKwp": 5 } } },
+            { "label": "No", "set": {} }
+          ] }
+        ]
+      },
+      {
+        "letter": "C", "title": "Fuel & Machines",
+        "questions": [
+          { "key": "generator", "q": "Does the school use a diesel / petrol generator?", "options": [
+            { "label": "No", "set": {} },
+            { "label": "Sometimes (load-shedding)", "set": { "generator": { "hasGenerator": true, "measuredLitres": 150 } } },
+            { "label": "Most days", "set": { "generator": { "hasGenerator": true, "measuredLitres": 600 } } }
+          ] },
+          { "key": "vehicle", "q": "Does the school own vehicles (bus / van) that use fuel?", "options": [
+            { "label": "Yes", "set": { "vehicle": { "measuredLitres": 400 } } },
+            { "label": "No", "set": {} }
+          ] },
+          { "key": "lpg", "q": "Is cooking gas (LPG) used at the school?", "options": [
+            { "label": "Yes", "set": { "cooking": { "lpgKg": 300 } } },
+            { "label": "No", "set": {} }
+          ] },
+          { "key": "ac", "q": "How many AC or refrigerator units are there?", "options": [
+            { "label": "None", "set": {} },
+            { "label": "1–2", "set": { "refrigerant": { "acUnits": 2 } } },
+            { "label": "3–5", "set": { "refrigerant": { "acUnits": 4 } } },
+            { "label": "More than 5", "set": { "refrigerant": { "acUnits": 7 } } }
+          ] }
+        ]
+      },
+      {
+        "letter": "D", "title": "Travel, Waste & Food",
+        "questions": [
+          { "key": "commuteMode", "q": "How do most students travel to school?", "options": [
+            { "label": "Walk / Cycle", "set": { "commute": { "dominantMode": "walk" } } },
+            { "label": "Bus", "set": { "commute": { "dominantMode": "publicBus" } } },
+            { "label": "Motorbike", "set": { "commute": { "dominantMode": "motorbike" } } },
+            { "label": "Private car", "set": { "commute": { "dominantMode": "car" } } }
+          ] },
+          { "key": "commuteDist", "q": "How far do most students travel (one way)?", "options": [
+            { "label": "Under 2 km", "set": { "commute": { "avgDistanceKm": 1 } } },
+            { "label": "2–5 km", "set": { "commute": { "avgDistanceKm": 3.5 } } },
+            { "label": "5–10 km", "set": { "commute": { "avgDistanceKm": 7 } } },
+            { "label": "Over 10 km", "set": { "commute": { "avgDistanceKm": 12 } } }
+          ] },
+          { "key": "paper", "q": "How much paper does the school use each month?", "options": [
+            { "label": "Very little", "set": { "paper": { "reamsPerMonth": 2 } } },
+            { "label": "A few reams", "set": { "paper": { "reamsPerMonth": 5 } } },
+            { "label": "5–15 reams", "set": { "paper": { "reamsPerMonth": 10 } } },
+            { "label": "Over 15 reams", "set": { "paper": { "reamsPerMonth": 20 } } }
+          ] },
+          { "key": "waste", "q": "How much waste does the school produce each week?", "options": [
+            { "label": "Under 20 kg", "set": { "waste": { "measuredKgPerWeek": 10 } } },
+            { "label": "20–50 kg", "set": { "waste": { "measuredKgPerWeek": 35 } } },
+            { "label": "50–100 kg", "set": { "waste": { "measuredKgPerWeek": 75 } } },
+            { "label": "Over 100 kg", "set": { "waste": { "measuredKgPerWeek": 150 } } }
+          ] },
+          { "key": "segregation", "q": "How is waste separated into bins?", "options": [
+            { "label": "Not separated", "set": { "waste": { "segregation": "none" } } },
+            { "label": "2 bins", "set": { "waste": { "segregation": "two" } } },
+            { "label": "3 bins", "set": { "waste": { "segregation": "three" } } },
+            { "label": "4+ bins", "set": { "waste": { "segregation": "full" } } }
+          ] },
+          { "key": "composting", "q": "Does the school compost food / garden waste?", "options": [
+            { "label": "Yes", "set": { "waste": { "composting": true } } },
+            { "label": "No", "set": { "waste": { "composting": false } } }
+          ] },
+          { "key": "recycling", "q": "Does the school recycle paper or plastic?", "options": [
+            { "label": "Yes", "set": { "waste": { "recycling": true } } },
+            { "label": "No", "set": { "waste": { "recycling": false } } }
+          ] },
+          { "key": "canteen", "q": "Does the school have a hostel or canteen?", "options": [
+            { "label": "Yes", "set": { "food": { "hasCanteen": true, "mealsPerDay": 200 } } },
+            { "label": "No", "set": { "food": { "hasCanteen": false } } }
+          ] }
+        ]
+      }
+    ]
+  },
+  "student": {
+    "title": "Student Eco Survey",
+    "hint": "Tick (●) one circle for each question. There are no wrong answers!",
+    "submit": false,
+    "sections": [
+      {
+        "letter": "A", "title": "Getting to School",
+        "questions": [
+          { "key": "travel", "q": "How do you usually travel to school?", "options": [
+            { "label": "Walk", "set": { "commute": { "dominantMode": "walk" } } },
+            { "label": "Cycle", "set": { "commute": { "dominantMode": "bicycle" } } },
+            { "label": "Bus", "set": { "commute": { "dominantMode": "publicBus" } } },
+            { "label": "Motorbike / Car", "set": { "commute": { "dominantMode": "car" } } }
+          ] },
+          { "key": "distance", "q": "How far is your home from school (one way)?", "options": [
+            { "label": "Under 1 km", "set": { "commute": { "avgDistanceKm": 0.5 } } },
+            { "label": "1–3 km", "set": { "commute": { "avgDistanceKm": 2 } } },
+            { "label": "3–7 km", "set": { "commute": { "avgDistanceKm": 5 } } },
+            { "label": "Over 7 km", "set": { "commute": { "avgDistanceKm": 9 } } }
+          ] }
+        ]
+      },
+      {
+        "letter": "B", "title": "Food & Water",
+        "questions": [
+          { "key": "lunch", "q": "What do you usually eat for lunch?", "options": [
+            { "label": "Veg meal (dal bhat)", "set": {} },
+            { "label": "Meal with meat", "set": {} },
+            { "label": "Home tiffin", "set": {} },
+            { "label": "Skip lunch", "set": {} }
+          ] },
+          { "key": "bottle", "q": "Do you bring a reusable water bottle?", "options": [
+            { "label": "Always", "set": {} },
+            { "label": "Usually", "set": {} },
+            { "label": "Sometimes", "set": {} },
+            { "label": "Never", "set": {} }
+          ] }
+        ]
+      },
+      {
+        "letter": "C", "title": "Energy & Paper",
+        "questions": [
+          { "key": "lights", "q": "Do you turn off lights & fans when leaving a room?", "options": [
+            { "label": "Always", "set": {} },
+            { "label": "Usually", "set": {} },
+            { "label": "Sometimes", "set": {} },
+            { "label": "Never", "set": {} }
+          ] },
+          { "key": "paperUse", "q": "How many notebooks / how much paper do you use?", "options": [
+            { "label": "Very little", "set": {} },
+            { "label": "Some", "set": {} },
+            { "label": "A lot", "set": {} }
+          ] }
+        ]
+      },
+      {
+        "letter": "D", "title": "Waste & Eco Action",
+        "questions": [
+          { "key": "plastic", "q": "What do you do with plastic wrappers / bottles?", "options": [
+            { "label": "Recycle / compost", "set": {} },
+            { "label": "Put in a bin", "set": {} },
+            { "label": "Burn it", "set": {} },
+            { "label": "Drop on the ground", "set": {} }
+          ] },
+          { "key": "ecoAction", "q": "Which eco action would you like to join?", "options": [
+            { "label": "Plant trees", "set": {} },
+            { "label": "Clean-up drive", "set": {} },
+            { "label": "Save water", "set": {} },
+            { "label": "Grow vegetables", "set": {} }
+          ] }
+        ]
+      }
+    ]
+  }
+}

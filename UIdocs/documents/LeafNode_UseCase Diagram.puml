@@ -1,0 +1,194 @@
+@startuml LeafNode_UseCase Diagram
+title CoPaila - Carbon Audit Platform: Use Case Diagram
+
+left to right direction
+
+actor "Guest" as guest
+actor "Individual\nUser" as individual
+actor "School\nAdmin" as admin
+actor "Teacher" as teacher
+actor "Student" as student
+actor "System\nAdmin" as sysadmin
+
+package "Authentication & Registration" {
+  usecase "UC1: View Landing Page" as UC1
+  usecase "UC2: Register School" as UC2
+  usecase "UC3: Register Individual" as UC3
+  usecase "UC4: Login" as UC4
+  usecase "UC5: Reset Password" as UC5
+  usecase "UC6: Logout" as UC6
+}
+
+package "School Management" {
+  usecase "UC7: Update School Profile" as UC7
+  usecase "UC8: View School Details" as UC8
+  usecase "UC9: Manage School Users" as UC9
+  usecase "UC10: Invite Users to School" as UC10
+}
+
+package "Carbon Audit - Data Collection" {
+  usecase "UC11: Manual Data Entry" as UC11
+  usecase "UC12: Enter Activity Data\n(9 Categories)" as UC12
+  usecase "UC13: Select Data Tier" as UC13
+  usecase "UC14: Upload OMR Sheet" as UC14
+  usecase "UC15: Scan & OCR\nOMR Sheet" as UC15
+  usecase "UC16: Review Scanned Data" as UC16
+  usecase "UC17: Save Audit Draft" as UC17
+}
+
+package "Carbon Calculation & Reporting" {
+  usecase "UC18: Submit Audit\nfor Calculation" as UC18
+  usecase "UC19: Calculate Emissions\n(Scopes 1/2/3)" as UC19
+  usecase "UC20: Generate Report" as UC20
+  usecase "UC21: View Emissions\nBreakdown" as UC21
+  usecase "UC22: Export Report" as UC22
+  usecase "UC23: View Historical\nAudits" as UC23
+}
+
+package "Recommendations & Analysis" {
+  usecase "UC24: View Recommendations" as UC24
+  usecase "UC25: Compare with\nPeer Schools" as UC25
+  usecase "UC26: Analyze Trends" as UC26
+  usecase "UC27: Plan Reduction\nStrategies" as UC27
+}
+
+package "Gamification & Engagement" {
+  usecase "UC28: View Dashboard" as UC28
+  usecase "UC29: Participate in Pet RPG" as UC29
+  usecase "UC30: Complete Tasks" as UC30
+  usecase "UC31: Earn Achievements" as UC31
+  usecase "UC32: View Leaderboard" as UC32
+  usecase "UC33: View School Forest" as UC33
+}
+
+package "System Administration" {
+  usecase "UC34: Approve/Reject\nSchool Registration" as UC34
+  usecase "UC35: Manage Users" as UC35
+  usecase "UC36: Monitor System\nHealth" as UC36
+  usecase "UC37: View Audit Logs" as UC37
+  usecase "UC38: Configure Emission\nFactors" as UC38
+}
+
+' Guest use cases
+guest --> UC1
+guest --> UC2
+guest --> UC3
+guest --> UC4
+
+' All users after login
+UC4 --> UC6
+individual --> UC4
+admin --> UC4
+teacher --> UC4
+student --> UC4
+sysadmin --> UC4
+
+' Individual user flows
+individual --> UC28
+individual --> UC29
+individual --> UC30
+individual --> UC31
+individual --> UC32
+individual --> UC33
+
+' School Admin flows
+admin --> UC7
+admin --> UC8
+admin --> UC9
+admin --> UC10
+admin --> UC11
+admin --> UC12
+admin --> UC13
+admin --> UC14
+admin --> UC15
+admin --> UC16
+admin --> UC17
+admin --> UC18
+admin --> UC20
+admin --> UC21
+admin --> UC22
+admin --> UC23
+admin --> UC24
+admin --> UC25
+admin --> UC26
+admin --> UC27
+
+' Teacher flows
+teacher --> UC28
+teacher --> UC12
+teacher --> UC21
+teacher --> UC24
+teacher --> UC29
+teacher --> UC30
+teacher --> UC31
+
+' Student flows
+student --> UC28
+student --> UC21
+student --> UC24
+student --> UC29
+student --> UC30
+student --> UC31
+student --> UC32
+student --> UC33
+
+' System Admin flows
+sysadmin --> UC34
+sysadmin --> UC35
+sysadmin --> UC36
+sysadmin --> UC37
+sysadmin --> UC38
+
+' Inheritance/extends relationships
+UC18 .> UC19: "includes"
+UC18 .> UC20: "includes"
+UC20 .> UC21: "includes"
+
+UC11 .> UC12: "includes"
+UC11 .> UC13: "includes"
+
+UC14 .> UC15: "includes"
+UC15 .> UC16: "includes"
+
+UC28 .> UC29: "includes"
+UC28 .> UC32: "includes"
+UC28 .> UC21: "includes"
+
+UC29 .> UC30: "includes"
+UC30 .> UC31: "includes"
+
+UC16 .> UC18: "enables"
+UC12 .> UC18: "enables"
+
+note bottom of UC18
+  Critical use case:
+  Triggers carbon calculation engine
+  Stores results in database
+  Generates recommendations
+end note
+
+note bottom of UC19
+  Carbon calculation:
+  - Applies GHG Protocol scopes
+  - Uses 3-tier confidence model
+  - Considers school context
+  - Produces emissions by scope
+end note
+
+note bottom of UC29
+  Gamification drives engagement:
+  - Pet RPG tasks linked to audit activities
+  - Achievement badges for milestones
+  - Leaderboards for schools and students
+  - School forest visualization
+end note
+
+note bottom of UC38
+  System admin configures:
+  - Emission factors by region
+  - Data tier weightings
+  - Calculation methodology
+  - Achievement rules
+end note
+
+@enduml
