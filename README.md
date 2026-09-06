@@ -1,4 +1,4 @@
-<img src="public/logo.svg" width="80" />
+<img src="public/logo.png" width="180" alt="CoPaila logo" />
 
 # CoPaila Carbon Frontend
 
